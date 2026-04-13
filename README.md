@@ -28,7 +28,12 @@ The included `keymap.c` is pre-configured with a custom "Cockpit" setup:
 * **Reactive Effects:** Advanced "Capacitor" style typing effects.
 * **Status Indicators:** Custom colors for Caps Lock, Num Lock, and Scroll Lock.
 
-**Feel free to use this keymap as a template and customize the RGB logic to your own preference!**
+## ⚡ Bootloader Mode (Flashing)
+To flash this custom firmware, you must first enter Bootloader mode (refer to Glorious factory instructions for the initial flash).
+
+**Once this custom firmware is flashed**, the command to re-enter Bootloader mode for any future updates is:
+* **FN + PAUSE**
+* This will trigger the `QK_BOOT` command, allowing you to use QMK Toolbox or the CLI to upload a new `.bin` file.
 
 ## 💡 Key Findings
 
@@ -43,10 +48,10 @@ The GMMK3 Wired uses inverted wiring for the side strips:
 ### 3. Ghost IDs
 IDs 126 and above do not correspond to physical keys. Lighting them can cause color "bleeding" or glitches on keys like F12. Always set these to `(0,0,0)`.
 
-## 🚀 How to use
+## 🚀 Getting Started
 1. Copy the provided `keymap.c` into your QMK environment.
 2. Compile your firmware.
-3. Flash your GMMK3 Wired.
+3. Flash your device. For all subsequent flashes, use the **FN + PAUSE** shortcut provided in this keymap.
 
 ## 🤝 Acknowledgments
 Reverse-engineered by **Dimitris** with the help of **Hermes (AI Assistant)**.
