@@ -56,4 +56,4 @@ IDs 126 and above do not correspond to physical keys. Lighting them can cause co
 ## 🤝 Acknowledgments
 Reverse-engineered by **Dimitris** with the help of **Hermes (AI Assistant)**.
 
-## ⚡Or you can directry flash the .bin file with the QMK Toolbox.
+## ⚡Or you can directry flash the .bin file with the QMK Toolbox, with the Keymap Features stated above.
