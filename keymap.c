@@ -94,43 +94,28 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     led_t led_state = host_keyboard_led_state(); // Κατάσταση Lock Keys
 
     for (uint8_t i = led_min; i < led_max; i++) {
-        uint8_t r = 3, g = 255, b = 3; // Βασικό: Πράσινο (Εδώ πήρε το χρώμα το 105!)
-        uint8_t react_r = 0, react_g = 0, react_b = 255; // Προεπιλογή ουράς: Μπλε
-        float dimmer = 1.0;
+        uint8_t r = 3, g = 255, b = 3; // Βασικό χρώμα: Πράσινο για όλα τα πλήκτρα
+        uint8_t react_r = 0, react_g = 0, react_b = 255; // Χρώμα αντίδρασης: Μπλε
         bool is_special = false;
 
-        // --- 1. SIDES, KNOB & GHOSTS ---
+        // --- 1. SIDES & KNOB ---
         
-        // ΑΡΙΣΤΕΡΗ ΠΛΑΪΝΗ ΛΩΡΙΔΑ (105-114) - Πορτοκαλί (Πάνω) -> Κόκκινο (Κάτω)
+        // ΑΡΙΣΤΕΡΗ ΠΛΑΪΝΗ ΛΩΡΙΔΑ (105-114)
         if (i >= 105 && i <= 114) { 
             uint8_t step = 114 - i; 
-            r = 255;
-            g = step * 14; 
-            b = 0;
+            r = 255; g = step * 14; b = 0;
             is_special = true;
         }
         
-        // ΔΕΞΙΑ ΠΛΑΪΝΗ ΛΩΡΙΔΑ (115-124) - Κόκκινο (Κάτω) -> Κίτρινο -> Πράσινο (Πάνω)
-        else if (i >= 115 && i <= 124) { 
+        // ΔΕΞΙΑ ΠΛΑΪΝΗ ΛΩΡΙΔΑ & KNOB (115-125)
+        // Το Knob (125) ακολουθεί το τέλος του δεξιού gradient (Πράσινο)
+        else if (i >= 115 && i <= 125) { 
             uint8_t step = i - 115; 
-            
-            if (step <= 4) { 
-                // Κάτω μισό (115-119): Κόκκινο -> Κίτρινο
-                r = 255; 
-                g = step * 63; // Το πράσινο ανεβαίνει σταδιακά
-                b = 0;
+            if (step <= 5) { 
+                r = 255; g = step * 51; b = 0; 
             } else { 
-                // Πάνω μισό (120-124): Κίτρινο -> Πράσινο
-                r = 255 - ((step - 4) * 51); // Το κόκκινο αρχίζει να σβήνει
-                g = 255; // Το πράσινο είναι πλέον τέρμα
-                b = 0;
+                r = 255 - ((step - 5) * 51); g = 255; b = 0; 
             }
-            is_special = true;
-        }
-        
-        // ΤΟ KNOB (125) - Λευκό
-        else if (i == 125) { 
-            r = 255; g = 255; b = 255;
             is_special = true;
         }
         
@@ -140,7 +125,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             is_special = true;
         }
 
-        // --- 2. MATRIX SCAN (Ο Δικός σου Άθικτος Κώδικας) ---
+        // --- 2. MATRIX SCAN (Πλήκτρα) ---
         if (!is_special) {
             for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
                 for (uint8_t col = 0; col < MATRIX_COLS; col++) {
@@ -152,10 +137,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                                 if (led_state.caps_lock) { r = 255; g = 0; b = 0; }
                                 else { r = 3; g = 255; b = 3; }
                                 break;
+                            
                             case KC_NUM:
                                 if (led_state.num_lock) { r = 255; g = 0; b = 0; }
                                 else { r = 1; g = 204; b = 255; }
                                 break;
+                                
                             case KC_SCRL:
                                 if (led_state.scroll_lock) { r = 255; g = 0; b = 0; }
                                 else { r = 1; g = 204; b = 255; }
@@ -181,7 +168,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                                 r = 255; g = 255; b = 255; break;
                         }
 
-                        // Λογική "Πυκνωτή"
+                        // Λογική "Πυκνωτή" (Reactive)
                         if (matrix_is_on(row, col)) {
                             led_charge[i] = 255;
                         } else if (led_charge[i] > 10) {
@@ -196,7 +183,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                             r = ((uint32_t)r * (255 - effect) + (react_r * (uint32_t)effect)) / 255;
                             g = ((uint32_t)g * (255 - effect) + (react_g * (uint32_t)effect)) / 255;
                             b = ((uint32_t)b * (255 - effect) + (react_b * (uint32_t)effect)) / 255;
-                            dimmer = 1.0;
                         }
                         break;
                     }
@@ -204,11 +190,10 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             }
         }
         
-        rgb_matrix_set_color(i, (uint16_t)r * v * dimmer / 255, (uint16_t)g * v * dimmer / 255, (uint16_t)b * v * dimmer / 255);
+        rgb_matrix_set_color(i, (uint16_t)r * v / 255, (uint16_t)g * v / 255, (uint16_t)b * v / 255);
     }
 
-    // --- Η "ΒΟΜΒΑ" ΤΟΥ ESC - ΠΑΝΤΑ ΚΟΚΚΙΝΟ (ID 0) ---
-    rgb_matrix_set_color(0, 255, 0, 0);
-
+    return false;
+}
     return false;
 }
