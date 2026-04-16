@@ -1,57 +1,71 @@
-# Glorious GMMK3 Wired - Custom QMK LED Mapping Guide (ANSI)
+GMMK3 100% ANSI Wired - Custom QMK Firmware
+This repository contains a specialized QMK Firmware implementation for the Glorious GMMK3 100% ANSI (Wired). It features a complete hardware LED mapping and a custom "Capacitor Decay" reactive lighting engine.
 
-This repository contains the reverse-engineered LED ID mapping and a custom `keymap.c` for the **Glorious GMMK3 Wired** mechanical keyboard (**ANSI Layout**). 
+🛠 Technical Overview
+Hardware: GMMK3 100% ANSI Wired
 
-Official documentation for the GMMK3 Wired LED IDs in QMK is currently limited. This guide is the result of extensive testing and reverse engineering to unlock the full potential of the keyboard's RGB matrix.
+MCU: WB32FQ
 
-> [!IMPORTANT]  
-> This mapping and code were developed and tested on the **ANSI (US) layout**. If you are using an ISO (EU) model, some LED IDs might differ.
+LED Driver: 2x AW20216S (Constant Current LED Controllers)
 
-## 🛠 The LED ID Map
+Key Features: Advanced Zonal RGB, Custom Reactive Logic, and Fixed Hardware Indicators.
 
-| Component | LED ID Range | Orientation / Note |
-| :--- | :--- | :--- |
-| **Escape Key** | **0** | Requires "Override/Bombing" method (see below). |
-| **Main Keys** | **1 - 104** | Standard Matrix keys. |
-| **Left Side Strip** | **105 - 114** | **Top-to-Bottom** (105 is the Top-most LED). |
-| **Right Side Strip** | **115 - 124** | **Bottom-to-Top** (115 is the Bottom-most LED). |
-| **Rotary Knob** | **125** | Electrically follows the Right Strip. |
-| **Ghost/Buffer IDs** | **126+** | Keep these **OFF** (RGB 0,0,0) to avoid artifacts. |
+🌟 Custom Features
+1. "Capacitor Decay" Reactive Effect
+Inspired by analog circuit behavior, this firmware implements a custom reactive algorithm. Each keypress "charges" the LED, which then follows a simulated discharge curve. The decay rate is tuned to provide a smooth, organic fade-out.
 
-## ⚠️ Known Issues / Work in Progress
-* **The "Rebel" LED 105:** The top-most LED of the left side strip (ID 105) consistently remains White, ignoring custom color/gradient commands. It appears this LED is hardcoded in the hardware/firmware as a status indicator that overrides QMK matrix commands.
+2. Advanced RGB Zonal Map
+The layout is logically partitioned into functional zones:
 
-## ✨ Keymap Features
-The included `keymap.c` is pre-configured with a custom "Cockpit" setup:
-* **Dual-Side Gradients:** Fire-orange to deep-red fades.
-* **Telemetry Style Right Strip:** A unique Red-Yellow-Green gradient.
-* **Reactive Effects:** Advanced "Capacitor" style typing effects.
-* **Status Indicators:** Custom colors for Caps Lock, Num Lock, and Scroll Lock.
+Core Alpha Matrix: Hermes Green.
 
-## ⚡ Bootloader Mode (Flashing)
-To flash this custom firmware, you must first enter Bootloader mode (refer to Glorious factory instructions for the initial flash).
+Esc Key: Solid Red (ID 0).
 
-**Once this custom firmware is flashed**, the command to re-enter Bootloader mode for any future updates is:
-* **FN + PAUSE**
-* This will trigger the `QK_BOOT` command, allowing you to use QMK Toolbox or the CLI to upload a new `.bin` file.
+F-Keys & Numpad: Cyan with White Reactive.
 
-## 💡 Key Findings
+Navigation Cluster: Purple with White Reactive.
 
-### 1. The "Bombing" Method (Priority Override)
-We discovered that the **Esc key (ID 0)** and the **Rotary Knob (ID 125)** are often overwritten by internal firmware indicators. To force custom colors, use the `rgb_matrix_set_color` command **outside and after** the main LED loop.
+Arrow Keys: Deep Yellow with White Reactive.
 
-### 2. Side Strip Asymmetry
-The GMMK3 Wired uses inverted wiring for the side strips:
-* **Left side** counts downwards (105 at the top).
-* **Right side** counts upwards (115 at the bottom).
+Win & Fn Keys: Static White with Electric Blue Reactive for high contrast.
 
-### 3. Ghost IDs
-IDs 126 and above do not correspond to physical keys. Lighting them can cause color "bleeding" or glitches on keys like F12. Always set these to `(0,0,0)`.
+Side Strips: 20-LED Red-to-Orange Gradient (IDs 104-123).
 
-## 🚀 Getting Started
-1. Copy the provided `keymap.c` into your QMK environment.
-2. Compile your firmware.
-3. Flash your device. For all subsequent flashes, use the **FN + PAUSE** shortcut provided in this keymap.
+Glorious Logo: Deep Orange (ID 124).
+
+3. Integrated Indicators
+The Caps Lock, Num Lock, and Scroll Lock keys function as status indicators. When engaged, they override the zonal color with a Solid Red signal, ensuring the keyboard state is visible at a glance.
+
+🔍 Hardware Mapping Discovery
+This project successfully mapped the **GMMK3's internal LED daisy-chain for the first time:**
+
+ID 0: Escape Key
+
+IDs 104-113: Left Side Light Strip (SLED1-SLED10)
+
+IDs 114-123: Right Side Light Strip (SLED11-SLED20)
+
+ID 124: Logo LED (adjacent to the Knob)
+
+🚀 Build Instructions
+Compilation
+Move the keymap folder to your QMK source tree: keyboards/gmmk/gmmk3/p100/ansi/keymaps/.
+
+Run a clean build to avoid object file conflicts:
+
+Bash
+qmk clean -kb gmmk/gmmk3/p100/ansi
+Compile the project:
+
+Bash
+qmk compile -kb gmmk/gmmk3/p100/ansi -km <your_keymap_name>
+Flashing
+Use QMK Toolbox to flash the resulting .bin file.
+
+To enter Bootloader Mode, hold the Esc key while plugging in the USB cable.
+
+👨‍💻 Engineering Notes
+The implementation leverages rgb_matrix_indicators_advanced_user for real-time per-LED color manipulation. Special care was taken to manage the AW20216S driver limits and ensuring the WB32FQ MCU handles the matrix scans and LED updates with minimal latency.
 
 ## 🤝 Acknowledgments
 Reverse-engineered by **Dimitris** with the help of **Hermes (AI Assistant)**.
