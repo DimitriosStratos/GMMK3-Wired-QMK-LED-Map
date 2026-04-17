@@ -65,7 +65,7 @@ Use QMK Toolbox to flash the resulting .bin file.
 To enter Bootloader Mode, hold the Esc key while plugging in the USB cable.
 
 👨‍💻 Engineering Notes
-The implementation leverages rgb_matrix_indicators_advanced_user for real-time per-LED color manipulation. Special care was taken to manage the AW20216S driver limits and ensuring the WB32FQ MCU handles the matrix scans and LED updates with minimal latency.
+The implementation leverages rgb_matrix_indicators_advanced_user for real-time per-LED color manipulation. Special care was taken to manage the AW20216S driver limits and ensuring the WB32FQ MCU handles the matrix scans and LED updates with minimal latency. **Note :if the new code is flashed to enter bootloader press Fn+Pause**
 
 ## 🤝 Acknowledgments
 Reverse-engineered by **Dimitris** with the help of **Hermes (AI Assistant)**.
