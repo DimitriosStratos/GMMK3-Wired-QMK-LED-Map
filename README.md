@@ -10,6 +10,8 @@ LED Driver: 2x AW20216S (Constant Current LED Controllers)
 
 Key Features: Advanced Zonal RGB, Custom Reactive Logic, and Fixed Hardware Indicators.
 
+I've updated the config.c with **Debounce 5ms, Polling rate 2ms,** and some other, see in the **config.h** file inside keymap/via
+
 🌟 Custom Features
 1. "Capacitor Decay" Reactive Effect
 Inspired by analog circuit behavior, this firmware implements a custom reactive algorithm. Each keypress "charges" the LED, which then follows a simulated discharge curve. The decay rate is tuned to provide a smooth, organic fade-out.
