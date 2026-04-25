@@ -1,4 +1,4 @@
-# GMMK3 100% (ANSI)
+# GMMK3 100% (ANSI) 
 
 A keyboard made and sold by Glorious LLC. Equipped with the WestBerry Q95 microcontroller.
 
