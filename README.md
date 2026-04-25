@@ -72,4 +72,4 @@ The implementation leverages rgb_matrix_indicators_advanced_user for real-time p
 ## 🤝 Acknowledgments
 Reverse-engineered by **Dimitris** with the help of **Hermes (AI Assistant)**.
 
-## ⚡Or you can directry flash the .bin file with the QMK Toolbox, with the Keymap Features stated above.
+## ⚡Or you can directry flash the .bin file with the QMK Toolbox, with the Keymap Features stated above , **which are in the BinFiles directory.**
