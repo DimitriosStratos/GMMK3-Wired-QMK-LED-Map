@@ -93,47 +93,64 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     led_t led_state = host_keyboard_led_state();
 
     for (uint8_t i = led_min; i < led_max; i++) {
-        uint8_t r = 3, g = 255, b = 3; // Βασικό: Πράσινο
-        uint8_t react_r = 0, react_g = 0, react_b = 255; // Default: Μπλε Reactive
+        uint8_t r = 0, g = 200, b = 255; // Βασικό:  (για τα "Others")
+        uint8_t react_r = 0, react_g = 0, react_b = 255; // Reactive: ΚΑΘΑΡΟ ΜΠΛΕ
         bool is_special = false;
 
-        // --- 1. ESC (0) - ΚΟΚΚΙΝΟ & LOGO (124) - ΒΑΘΥ ΠΟΡΤΟΚΑΛΙ ---
-        if (i == 0) { r = 255; g = 0; b = 0; is_special = true; } 
-        else if (i == 124) { r = 255; g = 40; b = 0; is_special = true; }
-
-        // --- 2. ΠΛΑΪΝΑ (104-123) - GRADIENT ---
+        // --- 1. LOGO & ΠΛΑΪΝΑ ---
+        if (i == 124) { 
+            r = 255; g = 40; b = 0; is_special = true; 
+        }
         else if (i >= 104 && i <= 123) {
             uint8_t step = (i <= 113) ? (113 - i) : (i - 114);
             r = 255; g = step * 6; b = 0; is_special = true;
         }
 
-        // --- 3. F-KEYS (1-12), PRTSC/SCRLK/PAUSE (13-15) & NUMPAD - ΓΑΛΑΖΙΟ & WHITE REACTIVE ---
-        else if ((i >= 1 && i <= 15) || (i >= 33 && i <= 36) || (i >= 54 && i <= 57) || 
-                 (i >= 71 && i <= 73) || (i >= 87 && i <= 90) || (i >= 102 && i <= 103)) {
+        // --- 2. F1-F11  
+        else if (i >= 1 && i <= 9)  {
             r = 0; g = 200; b = 255; 
-            react_r = 255; react_g = 255; react_b = 255; 
-            is_special = false;
+        }
+		
+		 // --- 2. F10  
+        else if (i == 10 )  {
+            r = 0; g = 255; b = 0; 
+        }
+		
+		 // --- 2. FF11  
+        else if (i == 11)  {
+            r = 255; g = 90; b = 0; 
+        }
+		
+		 // --- 2. ΒΕΛΑΚΙΑ - ΓΑΛΑΖΙΟ (CYAN) ---
+        else if ((i >= 99 && i <= 101) || (i==86)){
+            r = 0; g = 200; b = 255; 
         }
 
-        // --- 4. WIN (92) & FN (96) - ΛΕΥΚΟ & ΜΠΛΕ REACTIVE ---
+        // --- 3. F12 - ΚΟΚΚΙΝΟ ---
+        else if (i == 12) {
+            r = 255; g = 0; b = 0;
+        }
+
+        // --- 4. NAV CLUSTER (9 ΠΛΗΚΤΡΑ) - ΜΩΒ ---
+        else if ((i >= 13 && i <= 15) || (i >= 30 && i <= 32) || (i >= 51 && i <= 53)) {
+            r = 150; g = 0; b = 255; 
+        }
+
+        // --- 5. WIN (92) & FN (96) 
         else if (i == 92 || i == 96) {
             r = 255; g = 255; b = 255; 
-            react_r = 0; react_g = 0; react_b = 255; // Μπλε αντίδραση
-            is_special = false;
         }
 
-        // --- 5. ΒΕΛΑΚΙΑ (86, 99-101) - ΒΑΘΥ ΚΙΤΡΙΝΟ & WHITE REACTIVE ---
-        else if (i == 86 || i == 99 || i == 100 || i == 101) {
-            r = 255; g = 160; b = 0; 
-            react_r = 255; react_g = 255; react_b = 255;
-            is_special = false;
+        // --- 6. ALPHAS, NUMBERS 1-0, SPACE 
+        else if ((i >= 17 && i <= 26) || (i >= 38 && i <= 49) || (i >= 59 && i <= 69) || 
+                 (i >= 75 && i <= 84) || i == 94) {
+            r = 0; g = 255; b = 0;
         }
 
-        // --- 6. NAV CLUSTER (30-32, 51-53) - ΜΩΒ & WHITE REACTIVE ---
-        else if ((i >= 30 && i <= 32) || (i >= 51 && i <= 53)) {
-            r = 150; g = 0; b = 255; 
-            react_r = 255; react_g = 255; react_b = 255;
-            is_special = false;
+        // --- 7. NUMPAD - 
+        else if ((i >= 33 && i <= 36) || (i >= 54 && i <= 57) || (i >= 71 && i <= 73) || 
+                 (i >= 87 && i <= 90) || (i >= 102 && i <= 103)) {
+            r = 255; g = 90; b = 0; // Άλλαξε αυτές τις τιμές για να αλλάξει μόνο το Numpad
         }
 
         // --- ΕΚΤΕΛΕΣΗ ΛΟΓΙΚΗΣ LOCKS & REACTIVE ---
@@ -143,7 +160,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                     if (g_led_config.matrix_co[row][col] == i) {
                         uint16_t keycode = keymap_key_to_keycode(0, (keypos_t){.row = row, .col = col});
                         
-                        // Indicators: Caps, Num, Scroll Lock
+                        // Indicators: Caps, Num, Scroll Lock -> ΚΟΚΚΙΝΟ (Override)
                         if ((keycode == KC_CAPS && led_state.caps_lock) || 
                             (keycode == KC_NUM && led_state.num_lock) ||
                             (keycode == KC_SCRL && led_state.scroll_lock)) {
@@ -152,7 +169,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
                         // Εφέ Πυκνωτή (Reactive)
                         if (matrix_is_on(row, col)) { led_charge[i] = 255; }
-                        else if (led_charge[i] > 10) { led_charge[i] -= 4; }
+                        else if (led_charge[i] > 10) { led_charge[i] -= 3; }
                         else { led_charge[i] = 0; }
 
                         if (led_charge[i] > 0) {
