@@ -16,4 +16,16 @@
 
 #pragma once
 
+/* Βασικές Ρυθμίσεις VIA & Μνήμης */
 #define DYNAMIC_KEYMAP_LAYER_COUNT 3
+
+/* Έλεγχος Εντροπίας Επαφών (Hardware Debounce) */
+#define DEBOUNCE 5
+
+/* Χρονισμός & Λογική Διπλού Ρόλου (Tap/Hold Logic) */
+#define TAPPING_TERM 200
+#define PERMISSIVE_HOLD
+#define RETRO_TAPPING
+
+/* Κλείδωμα Επικοινωνίας USB Host (Bare Metal Polling) */
+#define USB_POLLING_INTERVAL_MS 2
