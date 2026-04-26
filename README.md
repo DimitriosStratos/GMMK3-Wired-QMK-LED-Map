@@ -73,3 +73,6 @@ The implementation leverages rgb_matrix_indicators_advanced_user for real-time p
 Reverse-engineered by **Dimitris** with the help of **Hermes (AI Assistant)**.
 
 ⚡Or you can directry flash the **.bin file** with the **QMK Toolbox**, with the Keymap Features stated above , **which are in the BinFiles directory.**
+
+🏷️ Project Keywords
+QMK | GMMK3 | AW20216S | Reverse Engineering | Industrial Night | 1000Hz Polling | Debounce Optimization
